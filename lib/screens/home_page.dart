@@ -21,21 +21,41 @@ String timeLastOpen = '00:00:00';
 int timeSeconds = 0;
 int index = 0;
 
-// void lastTask(String titleLastOpen, String timeLastOpen) async {
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   prefs.setString('title', titleLastOpen);
-//   prefs.setString('duration', timeLastOpen);
-// }
+void _updateTimer(int index, int time) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  taskModels[index]['duration'] = time;
+  String jsonData = jsonEncode(taskModels);
+  prefs.setString('data', jsonData);
+}
 
-// Future<String> getLastTitle() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('title') ?? 'Do the task';
-// }
+Future<List<dynamic>> getData() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? jsonData = prefs.getString('data');
+  List<dynamic> jsonDecode = json.decode(jsonData!);
+  return jsonDecode;
+}
 
-// Future<String> getLastDuration() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('duration') ?? '00:00:00';
-// }
+void lastTask(String titleLastOpen, String timeLastOpen, int duration) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('title', titleLastOpen);
+  prefs.setString('durationInString', timeLastOpen);
+  prefs.setInt('durationInSeconds', duration);
+}
+
+Future<String> getLastTitle() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('title') ?? 'Do the task';
+}
+
+Future<String> getLastDuration() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('durationInString') ?? '00:00:00';
+}
+
+Future<int> getDuration() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getInt('durationInSeconds') ?? 0;
+}
 
 int indexRandom() {
   Random random = Random();
@@ -68,87 +88,87 @@ class _HomePageState extends State<HomePage> {
                   height: 24,
                 ),
                 // NOTE :: TIME CARD CODE
-                // FutureBuilder<String>(
-                //   future: getLastDuration(),
-                //   builder:
-                //       (BuildContext context, AsyncSnapshot<String> snapshot) {
-                //     return GestureDetector(
-                //       onTap: () {
-                //         showDialog(
-                //           context: context,
-                //           builder: (context) {
-                //             return snapshot.hasData.toString() == 'Do the task'
-                //                 ? PopUpTimeTracker(
-                //                     titleTask: titleLastOpen,
-                //                     descTask: 'Personal',
-                //                     time: timeSeconds,
-                //                     index: index,
-                //                     color: greenColor,
-                //                   )
-                //                 : Container(
-                //                     width: 50,
-                //                     height: 50,
-                //                     decoration: BoxDecoration(
-                //                       borderRadius: BorderRadius.circular(10),
-                //                       color: purpleColor,
-                //                     ),
-                //                   );
-                //           },
-                //         );
-                //       },
-                //       child: Container(
-                //         padding: const EdgeInsets.symmetric(
-                //             horizontal: 16, vertical: 26),
-                //         width: double.infinity,
-                //         decoration: BoxDecoration(
-                //           borderRadius: BorderRadius.circular(12),
-                //           color: darkBlackColor,
-                //         ),
-                //         child: Column(
-                //           children: [
-                //             Row(
-                //               children: [
-                //                 Text(
-                //                   snapshot.data.toString(),
-                //                   style: Theme.of(context).textTheme.bodyLarge,
-                //                 ),
-                //                 const Spacer(),
-                //                 Image.asset(
-                //                   'assets/icon_right_arrow.png',
-                //                   width: 24,
-                //                   color: whiteColor,
-                //                 )
-                //               ],
-                //             ),
-                //             const SizedBox(height: 24),
-                //             Row(
-                //               children: [
-                //                 Image.asset(
-                //                   'assets/icon_loading.png',
-                //                   width: 16,
-                //                 ),
-                //                 const SizedBox(width: 12),
-                //                 FutureBuilder<String>(
-                //                   future: getLastDuration(),
-                //                   builder: (BuildContext context,
-                //                       AsyncSnapshot<String> data) {
-                //                     return Text(
-                //                       data.data.toString(),
-                //                       style: Theme.of(context)
-                //                           .textTheme
-                //                           .bodyMedium!
-                //                           .copyWith(color: whiteColor),
-                //                     );
-                //                   },
-                //                 )
-                //               ],
-                //             ),
-                //           ],
-                //         ),
-                //       ),
-                //     );
-                //   },
-                // ),
+                FutureBuilder<String>(
+                  future: getLastDuration(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    return GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return snapshot.hasData.toString() == 'Do the task'
+                                ? Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: purpleColor,
+                                    ),
+                                  )
+                                : PopUpTimeTracker(
+                                    titleTask: titleLastOpen,
+                                    descTask: 'Personal',
+                                    time: timeSeconds,
+                                    index: index,
+                                    color: greenColor,
+                                  );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 26),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: darkBlackColor,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  snapshot.data.toString(),
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                                const Spacer(),
+                                Image.asset(
+                                  'assets/icon_right_arrow.png',
+                                  width: 24,
+                                  color: whiteColor,
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+                            Row(
+                              children: [
+                                Image.asset(
+                                  'assets/icon_loading.png',
+                                  width: 16,
+                                ),
+                                const SizedBox(width: 12),
+                                FutureBuilder<String>(
+                                  future: getLastDuration(),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<String> data) {
+                                    return Text(
+                                      data.data.toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(color: whiteColor),
+                                    );
+                                  },
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 // END TIME CARD CODE
                 const SizedBox(height: 32),
                 // NOTE:: START CODE TITLE
@@ -173,6 +193,7 @@ class _HomePageState extends State<HomePage> {
                   child: ListView.builder(
                     itemCount: taskModels.length,
                     itemBuilder: (context, index) {
+                      getData();
                       return CardWidget(
                         titleTask: taskModels[index]['title'],
                         descTask1: taskModels[index]['type'],
@@ -321,14 +342,15 @@ class _CardWidgetState extends State<CardWidget> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    // lastTask(
-                    //   widget.titleTask,
-                    //   timerString,
-                    // );
-                    // titleLastOpen = widget.titleTask;
-                    // timeLastOpen = timerString;
+                    titleLastOpen = widget.titleTask;
+                    timeLastOpen = timerString;
                     timeSeconds = widget.time;
                     index = widget.index;
+                    lastTask(
+                      widget.titleTask,
+                      timerString,
+                      timeSeconds,
+                    );
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -423,20 +445,6 @@ class _PopUpTimeTrackerState extends State<PopUpTimeTracker>
             begin: const Offset(0, 1.5), end: const Offset(0.0, 0.0))
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _controller.forward();
-  }
-
-  void _updateTimer(int index, int time) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    taskModels[index]['duration'] = time;
-    String jsonData = jsonEncode(taskModels);
-    prefs.setString('data', jsonData);
-  }
-
-  Future<List<dynamic>> getData() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String? jsonData = prefs.getString('data');
-    List<dynamic> jsonDecode = json.decode(jsonData!);
-    return jsonDecode;
   }
 
   @override

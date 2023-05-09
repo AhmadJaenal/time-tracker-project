@@ -7,6 +7,9 @@ class AddTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController titleController = TextEditingController();
+    TextEditingController dscController = TextEditingController();
+    TextEditingController typeController = TextEditingController();
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: margin, vertical: 42),
@@ -29,31 +32,11 @@ class AddTimer extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 16),
-                  Container(
-                    height: 48,
-                    child: TextField(
-                      cursorColor: blueColor,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: grayColor.withOpacity(.5),
-                            width: 2,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: blueColor,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  inputTextField(controller: titleController)
                 ],
               ),
             ),
+            const SizedBox(),
             Container(
               margin: const EdgeInsets.only(top: 16),
               width: double.infinity,
@@ -65,59 +48,45 @@ class AddTimer extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Container(
-                        height: 48,
-                        child: TextField(
-                          cursorColor: blueColor,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: grayColor.withOpacity(.5),
-                                width: 2,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: blueColor,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 32),
-                      Container(
-                        height: 48,
-                        child: TextField(
-                          cursorColor: blueColor,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: grayColor.withOpacity(.5),
-                                width: 2,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: blueColor,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  inputTextField(controller: dscController)
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class inputTextField extends StatelessWidget {
+  TextEditingController controller = TextEditingController();
+  inputTextField({
+    super.key,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 48,
+      child: TextField(
+        cursorColor: blueColor,
+        decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: grayColor.withOpacity(.5),
+              width: 2,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: blueColor,
+              width: 2,
+            ),
+          ),
         ),
       ),
     );
